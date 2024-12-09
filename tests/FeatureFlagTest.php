@@ -17,17 +17,6 @@ class FeatureFlagTest extends TestCase
      * - DG plugin authors can override feature flags with a local .env file
      */
 
-     /**
-      * Test list:
-      * - Website's feature flag store is empty by default
-      * - Website's FF store cannot be written to, only initialized from a storage
-      * - Website's FF store cannnot be reinitialized
-      * - Empty store raises error when feature flag is requested
-      * - FF is 'on' when store initialized its key to 'on'
-      * - FF is 'off' when store initialized its key to 'off'
-      * - FF raises error when key is not found in store
-      */
-
     public function testStoreIsEmptyByDefault(): void
     {
         $store = new FeatureFlagStore();
@@ -38,6 +27,21 @@ class FeatureFlagTest extends TestCase
     {
         $store = new FeatureFlagStore(['test' => 'on']);
         $this->assertFalse($store->isEmpty());
+    }
+
+    /**
+      * Test list:
+      * - Empty store raises error when feature flag is requested
+      * - FF is 'on' when store initialized its key to 'on'
+      * - FF is 'off' when store initialized its key to 'off'
+      * - FF raises error when key is not found in store
+      */
+
+    public function testEmptyStoreRaisesErrorWhenFeatureFlagIsRequested(): void
+    {
+        $store = new FeatureFlagStore();
+        $this->expectException(\Exception::class);
+        $store->read(new FeatureFlag());
     }
 }
 
@@ -53,5 +57,10 @@ class FeatureFlagStore {
     public function isEmpty(): bool
     {
         return $this->isEmpty;
+    }
+
+    public function read(FeatureFlag $flag): void
+    {
+        throw new \Exception('Store is empty');
     }
 }

@@ -2,10 +2,6 @@
 
 namespace DigitalGravy\FeatureFlag;
 
-class FeatureFlagStore {
+class FeatureFlag {
 
-    public function isEmpty(): bool
-    {
-        return true;
-    }
 }
