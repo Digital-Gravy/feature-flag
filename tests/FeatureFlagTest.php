@@ -27,4 +27,18 @@ class FeatureFlagTest extends TestCase
       * - FF is 'off' when store initialized its key to 'off'
       * - FF raises error when key is not found in store
       */
+
+    public function testStoreIsEmptyByDefault(): void
+    {
+        $store = new FeatureFlagStore();
+        $this->assertTrue($store->isEmpty());
+    }
+}
+
+class FeatureFlagStore {
+
+    public function isEmpty(): bool
+    {
+        return true;
+    }
 }
