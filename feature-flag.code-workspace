@@ -1,0 +1,24 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"[php]": {
+			"editor.detectIndentation": true,
+			"editor.useTabStops": true,
+			"editor.formatOnSave": true,
+			"editor.insertSpaces": false,
+			"editor.defaultFormatter": "wongjn.php-sniffer"
+		},
+		"php.validate.run": "onSave",
+		"phpSniffer.run": "onSave",
+		"phpSniffer.autoDetect": true,
+		"phpunit.phpunit": "${workspaceFolder}/vendor/bin/phpunit",
+		"cSpell.words": [
+			"phpunit",
+			"wongjn"
+		]
+	}
+}
