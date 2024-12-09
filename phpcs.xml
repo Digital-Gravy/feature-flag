@@ -9,7 +9,7 @@
     <arg name="extensions" value="php"/>
 
     <!-- Exclude the Composer Vendor directory. -->
-	<exclude-pattern>/src/vendor/*</exclude-pattern>
+	<exclude-pattern>/vendor/*</exclude-pattern>
 
 	<!-- Exclude the Node Modules directory. -->
 	<exclude-pattern>/node_modules/*</exclude-pattern>
