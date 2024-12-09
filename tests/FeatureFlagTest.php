@@ -29,19 +29,24 @@ class FeatureFlagTest extends TestCase
         $this->assertFalse($store->isEmpty());
     }
 
-    /**
-      * Test list:
-      * - Empty store raises error when feature flag is requested
-      * - FF is 'on' when store initialized its key to 'on'
-      * - FF is 'off' when store initialized its key to 'off'
-      * - FF raises error when key is not found in store
-      */
 
     public function testEmptyStoreRaisesErrorWhenFeatureFlagIsRequested(): void
     {
         $store = new FeatureFlagStore();
         $this->expectException(\Exception::class);
         $store->read(new FeatureFlag());
+    }
+    /**
+      * Test list:
+      * - FF is 'on' when store initialized its key to 'on'
+      * - FF is 'off' when store initialized its key to 'off'
+      * - FF raises error when key is not found in store
+      */
+
+    public function testFeatureFlag_IsOn_When_Store_Initialized_Its_Key_To_On(): void
+    {
+        $store = new FeatureFlagStore(['test' => 'on']);
+        $this->assertTrue($store->is_on(new FeatureFlag('test')));
     }
 }
 
@@ -62,5 +67,9 @@ class FeatureFlagStore {
     public function read(FeatureFlag $flag): void
     {
         throw new \Exception('Store is empty');
+    }
+
+    public function is_on(FeatureFlag $flag): bool {
+        return true;
     }
 }
