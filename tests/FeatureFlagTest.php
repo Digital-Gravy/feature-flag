@@ -33,12 +33,25 @@ class FeatureFlagTest extends TestCase
         $store = new FeatureFlagStore();
         $this->assertTrue($store->isEmpty());
     }
+
+    public function testInitializedStoreIsNotEmpty(): void
+    {
+        $store = new FeatureFlagStore(['test' => 'on']);
+        $this->assertFalse($store->isEmpty());
+    }
 }
 
 class FeatureFlagStore {
 
+    private bool $isEmpty = true;
+
+    public function __construct(array $flags = [])
+    {
+        $this->isEmpty = empty($flags);
+    }
+
     public function isEmpty(): bool
     {
-        return true;
+        return $this->isEmpty;
     }
 }
