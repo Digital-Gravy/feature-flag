@@ -1,0 +1,29 @@
+{
+    "name": "digital-gravy/feature-flag",
+    "description": "Feature Flag for WordPress",
+    "type": "library",
+    "license": "GPL-3.0-or-later",
+    "autoload": {
+        "psr-4": {
+            "DigitalGravy\\FeatureFlag\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DigitalGravy\\FeatureFlag\\Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Matteo Greco",
+            "email": "matteo@digitalgravy.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^7.4|^8.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0"
+    }
+}
