@@ -1,4 +1,9 @@
 <?php
+/**
+ * Feature Flag Test
+ *
+ * @package DigitalGravy\FeatureFlag\Tests
+ */
 
 namespace DigitalGravy\FeatureFlag\Tests;
 
@@ -8,7 +13,6 @@ use DigitalGravy\FeatureFlag\FeatureFlagStore;
 use Throwable;
 
 class FeatureFlagTest extends TestCase {
-
 
 	/**
 	 * Features:
@@ -20,20 +24,20 @@ class FeatureFlagTest extends TestCase {
 	 */
 	public function testStoreIsEmptyByDefault(): void {
 		$store = new FeatureFlagStore();
-		$this->assertTrue( $store->isEmpty() );
+		$this->assertTrue( $store->is_empty() );
 	}
 
 	public function testInitializedStoreIsNotEmpty(): void {
 		$store = new FeatureFlagStore( array( 'test' => 'on' ) );
-		$this->assertFalse( $store->isEmpty() );
+		$this->assertFalse( $store->is_empty() );
 	}
-
 
 	public function testEmptyStoreRaisesErrorWhenFeatureFlagIsRequested(): void {
 		$store = new FeatureFlagStore();
 		$this->expectException( \Exception::class );
 		$store->read( new FeatureFlag() );
 	}
+
 	public function testFeatureFlag_IsOn_When_Store_Initialized_Its_Key_To_On(): void {
 		$store = new FeatureFlagStore( array( 'test' => 'on' ) );
 		$this->assertTrue( $store->is_on( new FeatureFlag( 'test' ) ) );

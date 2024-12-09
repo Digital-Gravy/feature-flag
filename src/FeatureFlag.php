@@ -1,4 +1,9 @@
 <?php
+/**
+ * Feature Flag
+ *
+ * @package DigitalGravy\FeatureFlag
+ */
 
 namespace DigitalGravy\FeatureFlag;
 
@@ -8,7 +13,6 @@ class FeatureFlag {
 
 	public function __construct( string $key = '' ) {
 		$this->key = $key;
-        echo "FeatureFlag: " . $this->key;
 	}
 
 	public function __toString(): string {

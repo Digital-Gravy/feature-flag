@@ -1,4 +1,9 @@
 <?php
+/**
+ * Feature Flag Store
+ *
+ * @package DigitalGravy\FeatureFlag
+ */
 
 namespace DigitalGravy\FeatureFlag;
 
@@ -12,7 +17,7 @@ class FeatureFlagStore {
 		$this->flags = $flags;
 	}
 
-	public function isEmpty(): bool {
+	public function is_empty(): bool {
 		return $this->isEmpty;
 	}
 
@@ -22,7 +27,7 @@ class FeatureFlagStore {
 
 	public function is_on( FeatureFlag $flag ): bool {
 		try {
-			return $this->flags[ (string) $flag ] === 'on';
+			return 'on' === $this->flags[ (string) $flag ];
 		} catch ( \Throwable $e ) {
 			throw new \Exception( 'Key not found in store' );
 		}
