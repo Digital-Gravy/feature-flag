@@ -9,7 +9,7 @@ class FeatureFlagTest extends TestCase
 {
     public function testDoSomething(): void
     {
-        $class = new YourClass();
+        $class = new FeatureFlag();
         $this->assertEquals('Hello World!', $class->doSomething());
     }
 }
