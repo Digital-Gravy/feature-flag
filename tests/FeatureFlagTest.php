@@ -4,6 +4,7 @@ namespace DigitalGravy\FeatureFlag\Tests;
 
 use PHPUnit\Framework\TestCase;
 use DigitalGravy\FeatureFlag\FeatureFlag;
+use Throwable;
 
 class FeatureFlagTest extends TestCase
 {
@@ -42,16 +43,17 @@ class FeatureFlagTest extends TestCase
         $this->assertTrue($store->is_on(new FeatureFlag('test')));
     }
 
-    /**
-      * Test list:
-      * - FF is 'off' when store initialized its key to 'off'
-      * - FF raises error when key is not found in store
-      */
-
     public function testFeatureFlag_IsOff_When_Store_Initialized_Its_Key_To_Off(): void
     {
         $store = new FeatureFlagStore(['test' => 'off']);
         $this->assertFalse($store->is_on(new FeatureFlag('test')));
+    }
+
+    public function testFeatureFlag_RaisesError_When_Key_Is_Not_Found_In_Store(): void
+    {
+        $store = new FeatureFlagStore(['test' => 'on']);
+        $this->expectException(\Exception::class);
+        $store->is_on(new FeatureFlag('not_found'));
     }
 }
 
@@ -77,6 +79,10 @@ class FeatureFlagStore {
     }
 
     public function is_on(FeatureFlag $flag): bool {
-        return $this->flags[(string)$flag] === 'on';
+        try {
+            return $this->flags[(string)$flag] === 'on';
+        } catch (\Throwable $e) {
+            throw new \Exception('Key not found in store');
+        }
     }
 }
