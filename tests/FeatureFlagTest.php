@@ -77,4 +77,51 @@ class FeatureFlagTest extends TestCase {
 		$this->expectException( \Exception::class );
 		$store->is_on( new FeatureFlag( 'not_found' ) );
 	}
+
+	/**
+	 * - FF store raises error when key uses illegal characters
+	 * - FF store accepts keys with alphanumeric characters, underscores, and dashes
+	 * - FF key should be case-insensitive
+	 * - FF store raises error when key is duplicate
+	 */
+
+	/**
+	 * @test
+	 * @description Store raises error when key uses illegal characters
+	 */
+	public function store_raises_error_when_key_uses_illegal_characters(): void {
+		$store = new FeatureFlagStore( array( 'test!' => 'on' ) );
+		$this->expectException( \Exception::class );
+		$store->is_on( new FeatureFlag( 'test!' ) );
+	}
+
+	/**
+	 * @test
+	 * @description Store accepts alphanumeric keys
+	 */
+	public function store_accepts_alphanumeric_keys(): void {
+		$this->expectNotToPerformAssertions();
+		$store = new FeatureFlagStore( array( 'test123' => 'on' ) );
+		$store->is_on( new FeatureFlag( 'test123' ) );
+	}
+
+	/**
+	 * @test
+	 * @description Store accepts keys with underscores
+	 */
+	public function store_accepts_keys_with_underscores(): void {
+		$this->expectNotToPerformAssertions();
+		$store = new FeatureFlagStore( array( 'test_123' => 'on' ) );
+		$store->is_on( new FeatureFlag( 'test_123' ) );
+	}
+
+	/**
+	 * @test
+	 * @description Store accepts keys with dashes
+	 */
+	public function store_accepts_keys_with_dashes(): void {
+		$this->expectNotToPerformAssertions();
+		$store = new FeatureFlagStore( array( 'test-123' => 'on' ) );
+		$store->is_on( new FeatureFlag( 'test-123' ) );
+	}
 }
