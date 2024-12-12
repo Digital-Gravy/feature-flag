@@ -17,7 +17,7 @@ class FeatureFlagTest extends TestCase {
 	 * Features:
 	 * - Digital Gravy plugin authors can share feature flags across website
 	 * - The website stores the feature flags in a keyed array
-	 * - Feature flag keys are unique alphanumeric strings
+	 * - Feature flag keys are unique alphanumeric strings with underscores and dashes
 	 * - Feature flags can be 'on' or 'off'
 	 * - DG plugin authors can override feature flags with a local .env file
 	 */
@@ -77,13 +77,6 @@ class FeatureFlagTest extends TestCase {
 		$this->expectException( \Exception::class );
 		$store->is_on( new FeatureFlag( 'not_found' ) );
 	}
-
-	/**
-	 * - FF store raises error when key uses illegal characters
-	 * - FF store accepts keys with alphanumeric characters, underscores, and dashes
-	 * - FF key should be case-insensitive
-	 * - FF store raises error when key is duplicate
-	 */
 
 	/**
 	 * @test
