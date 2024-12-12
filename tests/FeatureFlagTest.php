@@ -10,7 +10,6 @@ namespace DigitalGravy\FeatureFlag\Tests;
 use PHPUnit\Framework\TestCase;
 use DigitalGravy\FeatureFlag\FeatureFlag;
 use DigitalGravy\FeatureFlag\FeatureFlagStore;
-use Throwable;
 
 class FeatureFlagTest extends TestCase {
 
@@ -48,7 +47,7 @@ class FeatureFlagTest extends TestCase {
 	public function empty_store_raises_error_when_feature_flag_is_requested(): void {
 		$store = new FeatureFlagStore();
 		$this->expectException( \Exception::class );
-		$store->read( new FeatureFlag() );
+		$store->is_on( new FeatureFlag( 'test' ) );
 	}
 
 	/**

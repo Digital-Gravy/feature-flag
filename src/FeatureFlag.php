@@ -11,7 +11,7 @@ class FeatureFlag {
 
 	private string $key;
 
-	public function __construct( string $key = '' ) {
+	public function __construct( string $key ) {
 		$this->key = $key;
 	}
 

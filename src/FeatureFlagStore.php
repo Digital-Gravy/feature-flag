@@ -21,10 +21,6 @@ class FeatureFlagStore {
 		return $this->isEmpty;
 	}
 
-	public function read( FeatureFlag $flag ): void {
-		throw new \Exception( 'Store is empty' );
-	}
-
 	public function is_on( FeatureFlag $flag ): bool {
 		try {
 			return 'on' === $this->flags[ (string) $flag ];
