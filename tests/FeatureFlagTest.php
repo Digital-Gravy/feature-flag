@@ -124,4 +124,13 @@ class FeatureFlagTest extends TestCase {
 		$store = new FeatureFlagStore( array( 'test-123' => 'on' ) );
 		$store->is_on( new FeatureFlag( 'test-123' ) );
 	}
+
+	/**
+	 * @test
+	 * @description Feature flag key is case-insensitive
+	 */
+	public function feature_flag_key_is_case_insensitive(): void {
+		$store = new FeatureFlagStore( array( 'test' => 'on' ) );
+		$this->assertTrue( $store->is_on( new FeatureFlag( 'TEST' ) ) );
+	}
 }
