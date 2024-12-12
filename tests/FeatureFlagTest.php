@@ -90,9 +90,8 @@ class FeatureFlagTest extends TestCase {
 	 * @description Store raises error when key uses illegal characters
 	 */
 	public function store_raises_error_when_key_uses_illegal_characters(): void {
-		$store = new FeatureFlagStore( array( 'test!' => 'on' ) );
 		$this->expectException( \Exception::class );
-		$store->is_on( new FeatureFlag( 'test!' ) );
+		$store = new FeatureFlagStore( array( 'test!' => 'on' ) );
 	}
 
 	/**
@@ -132,5 +131,19 @@ class FeatureFlagTest extends TestCase {
 	public function feature_flag_key_is_case_insensitive(): void {
 		$store = new FeatureFlagStore( array( 'test' => 'on' ) );
 		$this->assertTrue( $store->is_on( new FeatureFlag( 'TEST' ) ) );
+	}
+
+	/**
+	 * @test
+	 * @description Store raises error when key is duplicate
+	 */
+	public function store_raises_error_when_key_is_duplicate(): void {
+		$this->expectException( \Exception::class );
+		$store = new FeatureFlagStore(
+			array(
+				'test' => 'on',
+				'TEST' => 'off', // Can't use 'test' again, PHP won't allow it, but keys are case-insensitive.
+			)
+		);
 	}
 }

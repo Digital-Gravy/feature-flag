@@ -14,7 +14,16 @@ class FeatureFlagStore {
 
 	public function __construct( array $flags = array() ) {
 		$this->isEmpty = empty( $flags );
-		$this->flags = $flags;
+		$flags_clean = array();
+		foreach ( $flags as $flag_key => $flag_value ) {
+			$flag = new FeatureFlag( $flag_key );
+			$flag_key = (string) $flag;
+			if ( isset( $flags_clean[ $flag_key ] ) ) {
+				throw new \Exception( 'Duplicate flag key: ' . $flag_key ); // @codingStandardsIgnoreLine
+			}
+			$flags_clean[ $flag_key ] = $flag_value;
+		}
+		$this->flags = $flags_clean;
 	}
 
 	public function is_empty(): bool {
