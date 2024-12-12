@@ -12,10 +12,10 @@ class FeatureFlagStore {
 	private bool $isEmpty = true;
 	private array $flags = array();
 
-	public function __construct( array $flags = array() ) {
-		$this->isEmpty = empty( $flags );
+	public function __construct( array $flags = array(), array $local_flags = array() ) {
 		$flags_clean = array();
-		foreach ( $flags as $flag_key => $flag_value ) {
+		$all_flags = array_merge( $flags, $local_flags );
+		foreach ( $all_flags as $flag_key => $flag_value ) {
 			$flag = new FeatureFlag( $flag_key );
 			$flag_key = (string) $flag;
 			if ( isset( $flags_clean[ $flag_key ] ) ) {
@@ -24,6 +24,7 @@ class FeatureFlagStore {
 			$flags_clean[ $flag_key ] = $flag_value;
 		}
 		$this->flags = $flags_clean;
+		$this->isEmpty = empty( $this->flags );
 	}
 
 	public function is_empty(): bool {

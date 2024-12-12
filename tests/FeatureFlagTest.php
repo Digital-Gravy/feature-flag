@@ -139,4 +139,14 @@ class FeatureFlagTest extends TestCase {
 			)
 		);
 	}
+
+	/**
+	 * @test
+	 * @description Local .env file overrides feature flags
+	 */
+	public function local_env_overrides_feature_flags(): void {
+		$local_env = array( 'test' => 'off' );
+		$store = new FeatureFlagStore( array( 'test' => 'on' ), $local_env );
+		$this->assertFalse( $store->is_on( new FeatureFlag( 'test' ) ) );
+	}
 }
