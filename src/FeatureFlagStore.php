@@ -9,7 +9,7 @@ namespace DigitalGravy\FeatureFlag;
 
 class FeatureFlagStore {
 
-	private bool $isEmpty = true;
+	private bool $is_empty = true;
 	private array $flags = array();
 
 	public function __construct( array $flags = array(), array $local_flags = array() ) {
@@ -24,11 +24,11 @@ class FeatureFlagStore {
 			$flags_clean[ $flag_key ] = $flag_value;
 		}
 		$this->flags = $flags_clean;
-		$this->isEmpty = empty( $this->flags );
+		$this->is_empty = empty( $this->flags );
 	}
 
 	public function is_empty(): bool {
-		return $this->isEmpty;
+		return $this->is_empty;
 	}
 
 	public function is_on( FeatureFlag $flag ): bool {
