@@ -50,4 +50,9 @@
     <rule ref="Squiz.Commenting.FunctionComment.Missing">
         <severity>0</severity>
     </rule>
+
+    <rule ref="Generic.Commenting.DocComment.MissingShort">
+        <severity>0</severity>
+        <exclude-pattern>/tests/*</exclude-pattern>
+    </rule>
 </ruleset>
