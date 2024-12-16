@@ -22,7 +22,10 @@ class FeatureFlagStore {
 			$flag = new FeatureFlag( $flag_key );
 			$flag_key = (string) $flag;
 			if ( isset( $flags_clean[ $flag_key ] ) ) {
-				throw new \Exception( 'Duplicate flag key: ' . $flag_key ); // @codingStandardsIgnoreLine
+				throw new \Exception( "Duplicate flag key: {$flag_key}" ); // @codingStandardsIgnoreLine
+			}
+			if ( ! in_array( $flag_value, array( 'on', 'off' ), true ) ) {
+				throw new \Exception( "Invalid value for flag {$flag_key}: {$flag_value}" ); // @codingStandardsIgnoreLine
 			}
 			$flags_clean[ $flag_key ] = $flag_value;
 		}

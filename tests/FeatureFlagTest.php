@@ -171,4 +171,14 @@ class FeatureFlagTest extends TestCase {
 		$store = new FeatureFlagStore( array( 'test' => 'on' ) );
 		$this->assertTrue( $store->is_on( 'test' ) );
 	}
+
+	/**
+	 * @test
+	 * @description Store raises error when feature flag value is not 'on' or 'off'
+	 */
+	public function store_raises_error_when_feature_flag_value_is_illegal(): void {
+		$this->expectException( \Exception::class );
+		$store = new FeatureFlagStore( array( 'test' => true ) );
+		$store->is_on( new FeatureFlag( 'test' ) );
+	}
 }
