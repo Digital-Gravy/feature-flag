@@ -16,6 +16,9 @@
 		"phpSniffer.run": "onSave",
 		"phpSniffer.autoDetect": true,
 		"phpunit.phpunit": "${workspaceFolder}/vendor/bin/phpunit",
+		"phpunit.args": [
+			"--testdox"
+		],
 		"cSpell.words": [
 			"phpunit",
 			"wongjn"
