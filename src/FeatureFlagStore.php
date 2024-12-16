@@ -12,9 +12,12 @@ class FeatureFlagStore {
 	private bool $is_empty = true;
 	private array $flags = array();
 
-	public function __construct( array $flags = array(), array $local_flags = array() ) {
+	public function __construct( array ...$sources ) {
 		$flags_clean = array();
-		$all_flags = array_merge( $flags, $local_flags );
+		$all_flags = array();
+		foreach ( $sources as $source ) {
+			$all_flags = array_merge( $all_flags, $source );
+		}
 		foreach ( $all_flags as $flag_key => $flag_value ) {
 			$flag = new FeatureFlag( $flag_key );
 			$flag_key = (string) $flag;

@@ -19,6 +19,8 @@ class FeatureFlagTest extends TestCase {
 	 * - The website stores the feature flags in a keyed array
 	 * - Feature flag keys are unique alphanumeric strings with underscores and dashes
 	 * - Feature flags can be 'on' or 'off'
+	 * - The website can store feature flags from multiple sources simultaneously
+	 * - When multiple sources are used, the last source that defines a feature flag wins
 	 * - DG plugin authors can override feature flags with a local .env file
 	 */
 
@@ -84,7 +86,7 @@ class FeatureFlagTest extends TestCase {
 	 */
 	public function store_raises_error_when_key_uses_illegal_characters(): void {
 		$this->expectException( \Exception::class );
-		$store = new FeatureFlagStore( array( 'test!' => 'on' ) );
+		new FeatureFlagStore( array( 'test!' => 'on' ) );
 	}
 
 	/**
@@ -132,7 +134,7 @@ class FeatureFlagTest extends TestCase {
 	 */
 	public function store_raises_error_when_key_is_duplicate(): void {
 		$this->expectException( \Exception::class );
-		$store = new FeatureFlagStore(
+		new FeatureFlagStore(
 			array(
 				'test' => 'on',
 				'TEST' => 'off', // Can't use 'test' again, PHP won't allow it, but keys are case-insensitive.
@@ -142,11 +144,22 @@ class FeatureFlagTest extends TestCase {
 
 	/**
 	 * @test
-	 * @description Local .env file overrides feature flags
+	 * @description Store uses last source that defines key when multiple sources are used
 	 */
-	public function local_env_overrides_feature_flags(): void {
-		$local_env = array( 'test' => 'off' );
-		$store = new FeatureFlagStore( array( 'test' => 'on' ), $local_env );
+	public function store_uses_last_source_that_defines_key_when_multiple_sources_are_used(): void {
+		$source1 = array( 'test' => 'on' );
+		$source2 = array( 'test' => 'on' );
+		$source3 = array( 'test' => 'off' );
+		$store = new FeatureFlagStore( $source1, $source2, $source3 );
 		$this->assertFalse( $store->is_on( new FeatureFlag( 'test' ) ) );
+	}
+
+	/**
+	 * @test
+	 * @description Store raises error when source is not an array
+	 */
+	public function store_raises_error_when_source_is_not_an_array(): void {
+		$this->expectException( \TypeError::class );
+		new FeatureFlagStore( 'not_an_array' );
 	}
 }
