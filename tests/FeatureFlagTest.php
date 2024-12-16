@@ -162,4 +162,13 @@ class FeatureFlagTest extends TestCase {
 		$this->expectException( \TypeError::class );
 		new FeatureFlagStore( 'not_an_array' );
 	}
+
+	/**
+	 * @test
+	 * @description Store accepts feature flag key as string when checking its value
+	 */
+	public function store_accepts_feature_flag_key_as_string_when_checking_its_value(): void {
+		$store = new FeatureFlagStore( array( 'test' => 'on' ) );
+		$this->assertTrue( $store->is_on( 'test' ) );
+	}
 }

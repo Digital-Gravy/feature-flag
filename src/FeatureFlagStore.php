@@ -34,9 +34,10 @@ class FeatureFlagStore {
 		return $this->is_empty;
 	}
 
-	public function is_on( FeatureFlag $flag ): bool {
+	public function is_on( FeatureFlag|string $flagOrFlagKey ): bool {
 		try {
-			return 'on' === $this->flags[ (string) $flag ];
+			$flag_key = $flagOrFlagKey instanceof FeatureFlag ? (string) $flagOrFlagKey : $flagOrFlagKey;
+			return 'on' === $this->flags[ $flag_key ];
 		} catch ( \Throwable $e ) {
 			throw new \Exception( 'Key not found in store' );
 		}
