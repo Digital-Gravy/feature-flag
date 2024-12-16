@@ -1,0 +1,5 @@
+{
+    "test-on": "on",
+    "test-off": "off",
+    "test-illegal": "illegal"
+}

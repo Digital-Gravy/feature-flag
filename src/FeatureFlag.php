@@ -21,4 +21,8 @@ class FeatureFlag {
 	public function __toString(): string {
 		return $this->key;
 	}
+
+	public static function is_valid( string $key, mixed $value ): bool {
+		return preg_match( '/^[a-zA-Z0-9_-]+$/', $key ) && in_array( $value, array( 'on', 'off' ), true );
+	}
 }
