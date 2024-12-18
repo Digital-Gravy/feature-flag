@@ -13,12 +13,17 @@ class FeatureFlagStore {
 	private array $flags = array();
 
 	public function __construct( array ...$sources ) {
+		$this->flags = static::clean_flags( static::merge_sources( ...$sources ) );
+		$this->is_empty = empty( $this->flags );
+	}
+
+	private static function merge_sources( ...$sources ) {
+		return array_merge( ...$sources );
+	}
+
+	private static function clean_flags( array $flags_dirty ) {
 		$flags_clean = array();
-		$all_flags = array();
-		foreach ( $sources as $source ) {
-			$all_flags = array_merge( $all_flags, $source );
-		}
-		foreach ( $all_flags as $flag_key => $flag_value ) {
+		foreach ( $flags_dirty as $flag_key => $flag_value ) {
 			$flag = new FeatureFlag( $flag_key );
 			$flag_key = (string) $flag;
 			if ( isset( $flags_clean[ $flag_key ] ) ) {
@@ -29,8 +34,7 @@ class FeatureFlagStore {
 			}
 			$flags_clean[ $flag_key ] = $flag_value;
 		}
-		$this->flags = $flags_clean;
-		$this->is_empty = empty( $this->flags );
+		return $flags_clean;
 	}
 
 	public function is_empty(): bool {
