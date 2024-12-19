@@ -11,7 +11,7 @@ use DigitalGravy\FeatureFlag\FeatureFlag;
 
 class KeyedArray {
 
-	public static function get_from( array $flags = array() ) {
+	public static function get_flags_from( array $flags = array() ) {
 		$clean_flags = array();
 		foreach ( $flags as $key => $value ) {
 			try {

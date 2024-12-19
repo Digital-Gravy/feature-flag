@@ -24,7 +24,7 @@ class KeyedArrayTest extends TestCase {
 	 * @description KeyedArray is empty when newly instantiated.
 	 */
 	public function keyed_array_is_empty_when_newly_instantiated() {
-		$keyed_array = KeyedArray::get_from( array() );
+		$keyed_array = KeyedArray::get_flags_from( array() );
 		$this->assertEmpty( $keyed_array );
 	}
 
@@ -33,7 +33,7 @@ class KeyedArrayTest extends TestCase {
 	 * @description KeyedArray is empty when instantiated with an empty array.
 	 */
 	public function keyed_array_is_empty_when_instantiated_with_an_empty_array() {
-		$keyed_array = KeyedArray::get_from( array() );
+		$keyed_array = KeyedArray::get_flags_from( array() );
 		$this->assertEmpty( $keyed_array );
 	}
 
@@ -42,7 +42,7 @@ class KeyedArrayTest extends TestCase {
 	 * @description KeyedArray is empty when instantiated with an array of invalid flags.
 	 */
 	public function keyed_array_is_empty_when_instantiated_with_an_array_of_invalid_flags() {
-		$keyed_array = KeyedArray::get_from( array( 'invalid-flag' ) );
+		$keyed_array = KeyedArray::get_flags_from( array( 'invalid-flag' ) );
 		$this->assertEmpty( $keyed_array );
 	}
 
@@ -51,7 +51,7 @@ class KeyedArrayTest extends TestCase {
 	 * @description KeyedArray is not empty when initialized with a valid flag.
 	 */
 	public function keyed_array_is_not_empty_when_initialized_with_a_valid_flag() {
-		$keyed_array = KeyedArray::get_from( array( 'test' => 'on' ) );
+		$keyed_array = KeyedArray::get_flags_from( array( 'test' => 'on' ) );
 		$this->assertNotEmpty( $keyed_array );
 	}
 
@@ -60,7 +60,7 @@ class KeyedArrayTest extends TestCase {
 	 * @description FlagStore can be initialized with a KeyedArray.
 	 */
 	public function flag_store_can_be_initialized_with_a_keyed_array() {
-		$flag_store = new FeatureFlagStore( KeyedArray::get_from( array( 'test' => 'on' ) ) );
+		$flag_store = new FeatureFlagStore( KeyedArray::get_flags_from( array( 'test' => 'on' ) ) );
 		$this->assertTrue( $flag_store->is_on( 'test' ) );
 	}
 }
