@@ -24,15 +24,11 @@ class FeatureFlagStore {
 	private static function clean_flags( array $flags_dirty ) {
 		$flags_clean = array();
 		foreach ( $flags_dirty as $flag_key => $flag_value ) {
-			$flag = new FeatureFlag( $flag_key );
-			$flag_key = (string) $flag;
-			if ( isset( $flags_clean[ $flag_key ] ) ) {
-				throw new \Exception( "Duplicate flag key: {$flag_key}" ); // @codingStandardsIgnoreLine
+			$flag = new FeatureFlag( $flag_key, $flag_value );
+			if ( isset( $flags_clean[ $flag->key ] ) ) {
+				throw new \Exception( "Duplicate flag key: {$flag->key}" ); // @codingStandardsIgnoreLine
 			}
-			if ( ! in_array( $flag_value, array( 'on', 'off' ), true ) ) {
-				throw new \Exception( "Invalid value for flag {$flag_key}: {$flag_value}" ); // @codingStandardsIgnoreLine
-			}
-			$flags_clean[ $flag_key ] = $flag_value;
+			$flags_clean[ $flag->key ] = $flag->value;
 		}
 		return $flags_clean;
 	}
@@ -41,9 +37,9 @@ class FeatureFlagStore {
 		return $this->is_empty;
 	}
 
-	public function is_on( FeatureFlag|string $flagOrFlagKey ): bool {
+	public function is_on( string $flag_key ): bool {
 		try {
-			$flag_key = $flagOrFlagKey instanceof FeatureFlag ? (string) $flagOrFlagKey : $flagOrFlagKey;
+			$flag_key = FeatureFlag::sanitize_key( $flag_key );
 			return 'on' === $this->flags[ $flag_key ];
 		} catch ( \Throwable $e ) {
 			throw new \Exception( 'Key not found in store' );

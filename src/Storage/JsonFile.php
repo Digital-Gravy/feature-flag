@@ -25,10 +25,12 @@ class JsonFile {
 			$flags = $flagsOrFilePath;
 		}
 		foreach ( $flags as $key => $value ) {
-			if ( ! FeatureFlag::is_valid( $key, $value ) ) {
+			try {
+				$flag = new FeatureFlag( $key, $value );
+			} catch ( \Exception $e ) {
 				continue;
 			}
-			$flags_clean[ $key ] = $value;
+			$flags_clean[ $flag->key ] = $flag->value;
 		}
 		$this->flags = $flags_clean;
 	}
