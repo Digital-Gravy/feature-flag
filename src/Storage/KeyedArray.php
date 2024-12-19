@@ -9,11 +9,14 @@ namespace DigitalGravy\FeatureFlag\Storage;
 
 use DigitalGravy\FeatureFlag\FeatureFlag;
 
-class KeyedArray {
+class KeyedArray implements FlagStorageInterface {
 
-	public static function get_flags_from( array $flags = array() ) {
+	public static function get_flags_from( $source = null ): array {
 		$clean_flags = array();
-		foreach ( $flags as $key => $value ) {
+		if ( is_null( $source ) ) {
+			return $clean_flags;
+		}
+		foreach ( $source as $key => $value ) {
 			try {
 				$flag = new FeatureFlag( $key, $value );
 				$clean_flags[ $flag->key ] = $flag->value;

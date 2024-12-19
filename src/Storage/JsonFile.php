@@ -9,37 +9,34 @@ namespace DigitalGravy\FeatureFlag\Storage;
 
 use DigitalGravy\FeatureFlag\FeatureFlag;
 
-class JsonFile {
+class JsonFile implements FlagStorageInterface {
 
-	private array $flags;
-
-	public function __construct( array|string $flagsOrFilePath = array() ) {
+	/**
+	 * @param mixed $source The source of the flags: a string path to a JSON file or an array of flags.
+	 * @return array<string,string> Array of flag states where values are 'on' or 'off'
+	 * @throws \Exception If unable to retrieve flags.
+	 */
+	public static function get_flags_from( $source = null ): array {
 		$flags = array();
 		$flags_clean = array();
-		if ( is_string( $flagsOrFilePath ) ) {
-			if ( ! file_exists( $flagsOrFilePath ) ) {
+		if ( is_null( $source ) ) {
+			return $flags_clean;
+		} else if ( is_string( $source ) ) {
+			if ( ! file_exists( $source ) ) {
 				throw new \Exception( 'JSON file not found' );
 			}
-			$flags = json_decode( file_get_contents( $flagsOrFilePath ), true );
+			$flags = json_decode( file_get_contents( $source ), true );
 		} else {
-			$flags = $flagsOrFilePath;
+			$flags = $source;
 		}
 		foreach ( $flags as $key => $value ) {
 			try {
 				$flag = new FeatureFlag( $key, $value );
+				$flags_clean[ $flag->key ] = $flag->value;
 			} catch ( \Exception $e ) {
 				continue;
 			}
-			$flags_clean[ $flag->key ] = $flag->value;
 		}
-		$this->flags = $flags_clean;
-	}
-
-	public function is_empty(): bool {
-		return empty( $this->flags );
-	}
-
-	public function get_flags(): array {
-		return $this->flags;
+		return $flags_clean;
 	}
 }
