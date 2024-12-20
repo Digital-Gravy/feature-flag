@@ -7,6 +7,7 @@
 
 namespace DigitalGravy\FeatureFlag\Tests;
 
+use DigitalGravy\FeatureFlag\FeatureFlag;
 use PHPUnit\Framework\TestCase;
 use DigitalGravy\FeatureFlag\FeatureFlagStore;
 
@@ -37,7 +38,7 @@ class FeatureFlagTest extends TestCase {
 	 * @description Store should not be empty when initialized with values
 	 */
 	public function initialized_store_is_not_empty(): void {
-		$store = new FeatureFlagStore( array( 'test' => 'on' ) );
+		$store = new FeatureFlagStore( array( new FeatureFlag( 'test', 'on' ) ) );
 		$this->assertFalse( $store->is_empty() );
 	}
 
@@ -56,7 +57,7 @@ class FeatureFlagTest extends TestCase {
 	 * @description Feature flag should be on when store is initialized with that key set to on
 	 */
 	public function feature_flag_is_on_when_store_initialized_its_key_to_on(): void {
-		$store = new FeatureFlagStore( array( 'test' => 'on' ) );
+		$store = new FeatureFlagStore( array( new FeatureFlag( 'test', 'on' ) ) );
 		$this->assertTrue( $store->is_on( 'test' ) );
 	}
 
@@ -65,7 +66,7 @@ class FeatureFlagTest extends TestCase {
 	 * @description Feature flag should be off when store is initialized with that key set to off
 	 */
 	public function feature_flag_is_off_when_store_initialized_its_key_to_off(): void {
-		$store = new FeatureFlagStore( array( 'test' => 'off' ) );
+		$store = new FeatureFlagStore( array( new FeatureFlag( 'test', 'off' ) ) );
 		$this->assertFalse( $store->is_on( 'test' ) );
 	}
 
@@ -74,7 +75,7 @@ class FeatureFlagTest extends TestCase {
 	 * @description Should raise an exception when requesting a non-existent feature flag
 	 */
 	public function feature_flag_raises_error_when_key_is_not_found_in_store(): void {
-		$store = new FeatureFlagStore( array( 'test' => 'on' ) );
+		$store = new FeatureFlagStore( array( new FeatureFlag( 'test', 'on' ) ) );
 		$this->expectException( \Exception::class );
 		$store->is_on( 'not_found' );
 	}
@@ -85,7 +86,7 @@ class FeatureFlagTest extends TestCase {
 	 */
 	public function store_raises_error_when_key_uses_illegal_characters(): void {
 		$this->expectException( \Exception::class );
-		new FeatureFlagStore( array( 'test!' => 'on' ) );
+		new FeatureFlagStore( array( new FeatureFlag( 'test!', 'on' ) ) );
 	}
 
 	/**
@@ -94,7 +95,7 @@ class FeatureFlagTest extends TestCase {
 	 */
 	public function store_accepts_alphanumeric_keys(): void {
 		$this->expectNotToPerformAssertions();
-		$store = new FeatureFlagStore( array( 'test123' => 'on' ) );
+		$store = new FeatureFlagStore( array( new FeatureFlag( 'test123', 'on' ) ) );
 		$store->is_on( 'test123' );
 	}
 
@@ -104,7 +105,7 @@ class FeatureFlagTest extends TestCase {
 	 */
 	public function store_accepts_keys_with_underscores(): void {
 		$this->expectNotToPerformAssertions();
-		$store = new FeatureFlagStore( array( 'test_123' => 'on' ) );
+		$store = new FeatureFlagStore( array( new FeatureFlag( 'test_123', 'on' ) ) );
 		$store->is_on( 'test_123' );
 	}
 
@@ -114,7 +115,7 @@ class FeatureFlagTest extends TestCase {
 	 */
 	public function store_accepts_keys_with_dashes(): void {
 		$this->expectNotToPerformAssertions();
-		$store = new FeatureFlagStore( array( 'test-123' => 'on' ) );
+		$store = new FeatureFlagStore( array( new FeatureFlag( 'test-123', 'on' ) ) );
 		$store->is_on( 'test-123' );
 	}
 
@@ -123,22 +124,8 @@ class FeatureFlagTest extends TestCase {
 	 * @description Feature flag key is case-insensitive
 	 */
 	public function feature_flag_key_is_case_insensitive(): void {
-		$store = new FeatureFlagStore( array( 'test' => 'on' ) );
+		$store = new FeatureFlagStore( array( new FeatureFlag( 'test', 'on' ) ) );
 		$this->assertTrue( $store->is_on( 'TEST' ) );
-	}
-
-	/**
-	 * @test
-	 * @description Store raises error when key is duplicate
-	 */
-	public function store_raises_error_when_key_is_duplicate(): void {
-		$this->expectException( \Exception::class );
-		new FeatureFlagStore(
-			array(
-				'test' => 'on',
-				'TEST' => 'off', // Can't use 'test' again, PHP won't allow it, but keys are case-insensitive.
-			)
-		);
 	}
 
 	/**
@@ -146,9 +133,9 @@ class FeatureFlagTest extends TestCase {
 	 * @description Store uses last source that defines key when multiple sources are used
 	 */
 	public function store_uses_last_source_that_defines_key_when_multiple_sources_are_used(): void {
-		$source1 = array( 'test' => 'on' );
-		$source2 = array( 'test' => 'on' );
-		$source3 = array( 'test' => 'off' );
+		$source1 = array( new FeatureFlag( 'test', 'on' ) );
+		$source2 = array( new FeatureFlag( 'test', 'on' ) );
+		$source3 = array( new FeatureFlag( 'test', 'off' ) );
 		$store = new FeatureFlagStore( $source1, $source2, $source3 );
 		$this->assertFalse( $store->is_on( 'test' ) );
 	}
@@ -167,7 +154,7 @@ class FeatureFlagTest extends TestCase {
 	 * @description Store accepts feature flag key as string when checking its value
 	 */
 	public function store_accepts_feature_flag_key_as_string_when_checking_its_value(): void {
-		$store = new FeatureFlagStore( array( 'test' => 'on' ) );
+		$store = new FeatureFlagStore( array( new FeatureFlag( 'test', 'on' ) ) );
 		$this->assertTrue( $store->is_on( 'test' ) );
 	}
 
@@ -177,7 +164,7 @@ class FeatureFlagTest extends TestCase {
 	 */
 	public function store_raises_error_when_feature_flag_value_is_illegal(): void {
 		$this->expectException( \Exception::class );
-		$store = new FeatureFlagStore( array( 'test' => true ) );
+		$store = new FeatureFlagStore( array( new FeatureFlag( 'test', true ) ) );
 		$store->is_on( 'test' );
 	}
 }

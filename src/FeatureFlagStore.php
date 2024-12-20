@@ -9,28 +9,36 @@ namespace DigitalGravy\FeatureFlag;
 
 class FeatureFlagStore {
 
+	/** @var bool */
 	private bool $is_empty = true;
+
+	/** @var array<FeatureFlag> */
 	private array $flags = array();
 
+	/**
+	 * @param array<array<FeatureFlag>> ...$sources The sources for the flags.
+	 */
 	public function __construct( array ...$sources ) {
-		$this->flags = static::clean_flags( static::merge_sources( ...$sources ) );
+		$this->flags = self::merge_sources( ...$sources );
 		$this->is_empty = empty( $this->flags );
 	}
 
-	private static function merge_sources( ...$sources ) {
-		return array_merge( ...$sources );
-	}
-
-	private static function clean_flags( array $flags_dirty ) {
-		$flags_clean = array();
-		foreach ( $flags_dirty as $flag_key => $flag_value ) {
-			$flag = $flag_value instanceof FeatureFlag ? $flag_value : new FeatureFlag( $flag_key, $flag_value );
-			if ( isset( $flags_clean[ $flag->key ] ) ) {
-				throw new \Exception( "Duplicate flag key: {$flag->key}" ); // @codingStandardsIgnoreLine
+	/**
+	 * @param array<array<FeatureFlag>> ...$sources The sources to merge.
+	 * @return array<FeatureFlag>
+	 * @throws \Exception If there are invalid flags.
+	 */
+	private static function merge_sources( array ...$sources ): array {
+		$merged = array();
+		foreach ( $sources as $source ) {
+			foreach ( $source as $flag ) {
+				if ( ! $flag instanceof FeatureFlag ) {
+					throw new \Exception( 'Invalid flag type' );
+				}
+				$merged[ $flag->key ] = $flag;
 			}
-			$flags_clean[ $flag->key ] = $flag->value;
 		}
-		return $flags_clean;
+		return $merged;
 	}
 
 	public function is_empty(): bool {
@@ -40,7 +48,7 @@ class FeatureFlagStore {
 	public function is_on( string $flag_key ): bool {
 		try {
 			$flag_key = FeatureFlag::sanitize_key( $flag_key );
-			return 'on' === $this->flags[ $flag_key ];
+			return 'on' === $this->flags[ $flag_key ]->value;
 		} catch ( \Throwable $e ) {
 			throw new \Exception( 'Key not found in store' );
 		}
