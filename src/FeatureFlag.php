@@ -7,6 +7,10 @@
 
 namespace DigitalGravy\FeatureFlag;
 
+/**
+ * @property-read string $key The flag key.
+ * @property-read string $value The flag value.
+ */
 class FeatureFlag {
 
 	private string $key;
@@ -18,14 +22,24 @@ class FeatureFlag {
 		$this->value = $value;
 	}
 
-	public function __get( string $name ) {
+	/**
+	 * @param string $name The property name.
+	 * @return string
+	 * @throws \Exception If the property is not valid.
+	 */
+	public function __get( string $name ): string {
 		if ( ! in_array( $name, array( 'key', 'value' ), true ) ) {
 			throw new \Exception( 'Invalid property' );
 		}
 		return $this->{$name};
 	}
 
-	public static function validate( string $key, mixed $value ): bool {
+	/**
+	 * @param string $key The flag key.
+	 * @param string $value The flag value.
+	 * @throws \Exception If the key or value is invalid.
+	 */
+	public static function validate( string $key, string $value ): bool {
 		if ( ! self::is_valid_key( $key ) ) {
 			throw new \Exception( "Flag key must contain only alphanumeric characters, underscores, and dashes ~ received: {$key}" ); // @codingStandardsIgnoreLine
 		}
@@ -40,7 +54,7 @@ class FeatureFlag {
 	}
 
 	public static function is_valid_key( string $key ): bool {
-		return preg_match( '/^[a-zA-Z0-9_-]+$/', $key );
+		return preg_match( '/^[a-zA-Z0-9_-]+$/', $key ) === 1;
 	}
 
 	public static function is_valid_value( mixed $value ): bool {
