@@ -11,15 +11,24 @@ use DigitalGravy\FeatureFlag\FeatureFlag;
 
 class KeyedArray implements FlagStorageInterface {
 
-	public static function get_flags_from( $source = null ): array {
+	/**
+	 * @var array<string,string>
+	 */
+	private array $flags_dirty;
+
+	/**
+	 * @param array<string,string> $flags Array of flags where keys are flag keys and values are flag states.
+	 */
+	public function __construct( array $flags ) {
+		$this->flags_dirty = $flags;
+	}
+
+	public function get_flags(): array {
 		$clean_flags = array();
-		if ( is_null( $source ) ) {
-			return $clean_flags;
-		}
-		foreach ( $source as $key => $value ) {
+		foreach ( $this->flags_dirty as $key => $value ) {
 			try {
 				$flag = new FeatureFlag( $key, $value );
-				$clean_flags[ $flag->key ] = $flag->value;
+				$clean_flags[ $flag->key ] = $flag;
 			} catch ( \Exception $e ) {
 				continue;
 			}

@@ -21,46 +21,45 @@ class KeyedArrayTest extends TestCase {
 
 	/**
 	 * @test
-	 * @description KeyedArray is empty when newly instantiated.
+	 * @description Storage raises error when no source is provided
 	 */
-	public function keyed_array_is_empty_when_newly_instantiated() {
-		$flags = KeyedArray::get_flags_from();
-		$this->assertEmpty( $flags );
+	public function storage_raises_error_when_no_source_is_provided(): void {
+		$this->expectException( \ArgumentCountError::class );
+		new KeyedArray();
 	}
 
 	/**
 	 * @test
-	 * @description KeyedArray is empty when instantiated with an empty array.
+	 * @description Storage returns no flags when empty source is provided
 	 */
-	public function keyed_array_is_empty_when_instantiated_with_an_empty_array() {
-		$flags = KeyedArray::get_flags_from( array() );
-		$this->assertEmpty( $flags );
+	public function storage_returns_no_flags_when_empty_source_is_provided(): void {
+		$storage = new KeyedArray( array() );
+		$this->assertEmpty( $storage->get_flags() );
 	}
 
 	/**
 	 * @test
-	 * @description KeyedArray is empty when instantiated with an array of invalid flags.
+	 * @description Storage returns no flags when source contains no valid flags
 	 */
-	public function keyed_array_is_empty_when_instantiated_with_an_array_of_invalid_flags() {
-		$flags = KeyedArray::get_flags_from( array( 'invalid-flag' ) );
-		$this->assertEmpty( $flags );
+	public function storage_returns_no_flags_when_source_contains_no_valid_flags(): void {
+		$storage = new KeyedArray( array( 'inval!d-key' => 'invalid-value' ) );
+		$this->assertEmpty( $storage->get_flags() );
 	}
 
 	/**
 	 * @test
-	 * @description KeyedArray is not empty when initialized with a valid flag.
+	 * @description Storage returns flags when source contains valid flags
 	 */
-	public function keyed_array_is_not_empty_when_initialized_with_a_valid_flag() {
-		$flags = KeyedArray::get_flags_from( array( 'test' => 'on' ) );
-		$this->assertNotEmpty( $flags );
-	}
-
-	/**
-	 * @test
-	 * @description FlagStore can be initialized with a KeyedArray.
-	 */
-	public function flag_store_can_be_initialized_with_a_keyed_array() {
-		$flag_store = new FeatureFlagStore( KeyedArray::get_flags_from( array( 'test' => 'on' ) ) );
-		$this->assertTrue( $flag_store->is_on( 'test' ) );
+	public function storage_returns_flags_when_source_contains_valid_flags(): void {
+		$storage = new KeyedArray(
+			array(
+				'test-on' => 'on',
+				'test-off' => 'off',
+			)
+		);
+		$flags = $storage->get_flags();
+		$this->assertCount( 2, $flags );
+		$this->assertArrayHasKey( 'test-on', $flags );
+		$this->assertArrayHasKey( 'test-off', $flags );
 	}
 }
