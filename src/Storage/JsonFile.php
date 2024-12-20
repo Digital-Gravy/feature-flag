@@ -45,38 +45,36 @@ class JsonFile implements FlagStorageInterface {
 
 	/**
 	 * @return array<mixed,mixed> Array of contents from JSON file
-	 * @throws \Exception If unable to retrieve flags.
+	 * @throws \RuntimeException If unable to retrieve flags.
+	 * @throws \UnexpectedValueException If JSON file does not decode to an array.
 	 */
 	private function get_flags_from_file(): array {
 		$this->validate_file_path();
 
 		$file_contents = file_get_contents( $this->file_path );
 		if ( false === $file_contents ) {
-			throw new \Exception( 'Failed to read JSON file' );
+			throw new \RuntimeException( 'Failed to read JSON file' );
 		}
 
-		$flags_dirty = json_decode( $file_contents, true );
-		if ( JSON_ERROR_NONE !== json_last_error() ) {
-			throw new \Exception( 'Invalid JSON file' );
-		}
+		$flags_dirty = json_decode( $file_contents, true, 512, JSON_THROW_ON_ERROR );
 
 		if ( ! is_array( $flags_dirty ) ) {
-			throw new \Exception( 'Could not decode JSON file' );
+			throw new \UnexpectedValueException( 'JSON file must decode to an array' );
 		}
 
 		return $flags_dirty;
 	}
 
 	/**
-	 * @throws \Exception If file path is invalid.
+	 * @throws \RuntimeException If file path is invalid.
 	 */
 	private function validate_file_path(): void {
 		if ( ! file_exists( $this->file_path ) ) {
-			throw new \Exception( 'JSON file not found' );
+			throw new \RuntimeException( 'JSON file not found' );
 		}
 
 		if ( ! is_readable( $this->file_path ) ) {
-			throw new \Exception( 'JSON file is not readable' );
+			throw new \RuntimeException( 'JSON file is not readable' );
 		}
 	}
 }

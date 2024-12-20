@@ -32,7 +32,7 @@ class JsonFileTest extends TestCase {
 	 * @description Storage raises error when file is not found
 	 */
 	public function storage_raises_error_when_file_is_not_found(): void {
-		$this->expectException( \Exception::class );
+		$this->expectException( \RuntimeException::class );
 		$storage = new JsonFile( 'nonexistent.json' );
 		$storage->get_flags();
 	}
@@ -42,7 +42,7 @@ class JsonFileTest extends TestCase {
 	 * @description Storage raises error when file is not readable
 	 */
 	public function storage_raises_error_when_file_is_not_readable(): void {
-		$this->expectException( \Exception::class );
+		$this->expectException( \JsonException::class );
 		$storage = new JsonFile( 'tests/data/flags-non-readable.json' );
 		$storage->get_flags();
 	}
@@ -52,7 +52,7 @@ class JsonFileTest extends TestCase {
 	 * @description Storage raises error when file is not a valid JSON file
 	 */
 	public function storage_raises_error_when_file_is_not_a_valid_json_file(): void {
-		$this->expectException( \Exception::class );
+		$this->expectException( \JsonException::class );
 		$storage = new JsonFile( 'tests/data/flags-non-json.json' );
 		$storage->get_flags();
 	}
