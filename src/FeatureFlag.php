@@ -24,12 +24,11 @@ class FeatureFlag {
 
 	/**
 	 * @param string $name The property name.
-	 * @return string
-	 * @throws \Exception If the property is not valid.
+	 * @return string|null
 	 */
-	public function __get( string $name ): string {
+	public function __get( string $name ): string|null {
 		if ( ! in_array( $name, array( 'key', 'value' ), true ) ) {
-			throw new \Exception( 'Invalid property' );
+			return null;
 		}
 		return $this->{$name};
 	}
@@ -37,14 +36,15 @@ class FeatureFlag {
 	/**
 	 * @param string $key The flag key.
 	 * @param string $value The flag value.
-	 * @throws \Exception If the key or value is invalid.
+	 * @throws Exception\Invalid_Flag_Key If the key is invalid.
+	 * @throws Exception\Invalid_Flag_Value If the value is invalid.
 	 */
 	public static function validate( string $key, string $value ): bool {
 		if ( ! self::is_valid_key( $key ) ) {
-			throw new \Exception( "Flag key must contain only alphanumeric characters, underscores, and dashes ~ received: {$key}" ); // @codingStandardsIgnoreLine
+			throw new Exception\Invalid_Flag_Key( $key ); // @codingStandardsIgnoreLine
 		}
 		if ( ! self::is_valid_value( $value ) ) {
-			throw new \Exception( "Flag value must be 'on' or 'off' ~ received: {$value} for key: {$key}" ); // @codingStandardsIgnoreLine
+			throw new Exception\Invalid_Flag_Value( $key, $value ); // @codingStandardsIgnoreLine
 		}
 		return true;
 	}

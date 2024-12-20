@@ -26,7 +26,7 @@ class FeatureFlagStore {
 	/**
 	 * @param array<FeatureFlag>[] ...$sources The sources to merge.
 	 * @return array<string, FeatureFlag>
-	 * @throws \Exception If there are invalid flags.
+	 * @throws Exception\Not_A_Flag If there are invalid flags.
 	 */
 	private static function merge_sources( array ...$sources ): array {
 		$merged = array();
@@ -34,7 +34,7 @@ class FeatureFlagStore {
 			foreach ( $source as $flag ) {
 				/** @var mixed $flag */
 				if ( ! $flag instanceof FeatureFlag ) {
-					throw new \Exception( 'Invalid flag type' );
+					throw new Exception\Not_A_Flag();
 				}
 				$merged[ $flag->key ] = $flag;
 			}
@@ -51,7 +51,7 @@ class FeatureFlagStore {
 			$flag_key = FeatureFlag::sanitize_key( $flag_key );
 			return 'on' === $this->flags[ $flag_key ]->value;
 		} catch ( \Throwable $e ) {
-			throw new \Exception( 'Key not found in store' );
+			throw new Exception\Flag_Key_Not_Found( $flag_key ); // @codingStandardsIgnoreLine
 		}
 	}
 }

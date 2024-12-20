@@ -7,6 +7,9 @@
 
 namespace DigitalGravy\FeatureFlag\Tests;
 
+use DigitalGravy\FeatureFlag\Exception\Flag_Key_Not_Found;
+use DigitalGravy\FeatureFlag\Exception\Invalid_Flag_Key;
+use DigitalGravy\FeatureFlag\Exception\Invalid_Flag_Value;
 use DigitalGravy\FeatureFlag\FeatureFlag;
 use PHPUnit\Framework\TestCase;
 use DigitalGravy\FeatureFlag\FeatureFlagStore;
@@ -44,16 +47,6 @@ class FeatureFlagTest extends TestCase {
 
 	/**
 	 * @test
-	 * @description Should raise an exception when requesting a feature flag from an empty store
-	 */
-	public function empty_store_raises_error_when_feature_flag_is_requested(): void {
-		$store = new FeatureFlagStore();
-		$this->expectException( \Exception::class );
-		$store->is_on( 'test' );
-	}
-
-	/**
-	 * @test
 	 * @description Feature flag should be on when store is initialized with that key set to on
 	 */
 	public function feature_flag_is_on_when_store_initialized_its_key_to_on(): void {
@@ -76,7 +69,7 @@ class FeatureFlagTest extends TestCase {
 	 */
 	public function feature_flag_raises_error_when_key_is_not_found_in_store(): void {
 		$store = new FeatureFlagStore( array( new FeatureFlag( 'test', 'on' ) ) );
-		$this->expectException( \Exception::class );
+		$this->expectException( Flag_Key_Not_Found::class );
 		$store->is_on( 'not_found' );
 	}
 
@@ -85,7 +78,7 @@ class FeatureFlagTest extends TestCase {
 	 * @description Store raises error when key uses illegal characters
 	 */
 	public function store_raises_error_when_key_uses_illegal_characters(): void {
-		$this->expectException( \Exception::class );
+		$this->expectException( Invalid_Flag_Key::class );
 		new FeatureFlagStore( array( new FeatureFlag( 'test!', 'on' ) ) );
 	}
 
@@ -163,7 +156,7 @@ class FeatureFlagTest extends TestCase {
 	 * @description Store raises error when feature flag value is not 'on' or 'off'
 	 */
 	public function store_raises_error_when_feature_flag_value_is_illegal(): void {
-		$this->expectException( \Exception::class );
+		$this->expectException( Invalid_Flag_Value::class );
 		$store = new FeatureFlagStore( array( new FeatureFlag( 'test', true ) ) );
 		$store->is_on( 'test' );
 	}
