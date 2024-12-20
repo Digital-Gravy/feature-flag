@@ -29,6 +29,9 @@ class PHPConstant implements FlagStorageInterface {
 			}
 			$constant_value = constant( $constant_name );
 			$flag_value = is_bool( $constant_value ) ? ( $constant_value ? 'on' : 'off' ) : $constant_value;
+			if ( ! is_string( $flag_value ) ) {
+				continue;
+			}
 			try {
 				$flag = new FeatureFlag( $constant_name, $flag_value );
 				$flags_clean[ $flag->key ] = $flag;
