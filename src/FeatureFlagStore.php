@@ -24,7 +24,7 @@ class FeatureFlagStore {
 	private static function clean_flags( array $flags_dirty ) {
 		$flags_clean = array();
 		foreach ( $flags_dirty as $flag_key => $flag_value ) {
-			$flag = new FeatureFlag( $flag_key, $flag_value );
+			$flag = $flag_value instanceof FeatureFlag ? $flag_value : new FeatureFlag( $flag_key, $flag_value );
 			if ( isset( $flags_clean[ $flag->key ] ) ) {
 				throw new \Exception( "Duplicate flag key: {$flag->key}" ); // @codingStandardsIgnoreLine
 			}
