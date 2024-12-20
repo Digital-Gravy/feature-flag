@@ -39,8 +39,9 @@
     "scripts": {
         "lint": "phpcs --standard=phpcs.xml ./src",
         "lint:fix": "phpcbf --standard=phpcs.xml ./src",
-        "test": "phpunit tests",
+        "test": "phpunit tests && phpstan analyse src",
         "test:coverage": "phpunit --coverage-html ./coverage.html",
-        "phpstan": "phpstan analyse src"
+        "phpstan": "phpstan analyse src",
+        "release": "git tag -a v$1 -m \"Release version $1\" && git push origin v$1 && composer update"
     }
 }
