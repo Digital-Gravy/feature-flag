@@ -24,7 +24,7 @@ class KeyedArrayTest extends TestCase {
 	 * @description KeyedArray is empty when newly instantiated.
 	 */
 	public function keyed_array_is_empty_when_newly_instantiated() {
-		$flags = KeyedArray::get_flags_from( array() );
+		$flags = KeyedArray::get_flags_from();
 		$this->assertEmpty( $flags );
 	}
 
