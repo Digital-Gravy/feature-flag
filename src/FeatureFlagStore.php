@@ -16,7 +16,7 @@ class FeatureFlagStore {
 	private array $flags = array();
 
 	/**
-	 * @param array<array<FeatureFlag>> ...$sources The sources for the flags.
+	 * @param array<FeatureFlag>[] ...$sources The sources for the flags.
 	 */
 	public function __construct( array ...$sources ) {
 		$this->flags = self::merge_sources( ...$sources );
@@ -24,14 +24,15 @@ class FeatureFlagStore {
 	}
 
 	/**
-	 * @param array<array<FeatureFlag>> ...$sources The sources to merge.
-	 * @return array<FeatureFlag>
+	 * @param array<FeatureFlag>[] ...$sources The sources to merge.
+	 * @return array<string, FeatureFlag>
 	 * @throws \Exception If there are invalid flags.
 	 */
 	private static function merge_sources( array ...$sources ): array {
 		$merged = array();
 		foreach ( $sources as $source ) {
 			foreach ( $source as $flag ) {
+				/** @var mixed $flag */
 				if ( ! $flag instanceof FeatureFlag ) {
 					throw new \Exception( 'Invalid flag type' );
 				}
