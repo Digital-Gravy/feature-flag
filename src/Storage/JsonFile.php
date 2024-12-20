@@ -11,32 +11,72 @@ use DigitalGravy\FeatureFlag\FeatureFlag;
 
 class JsonFile implements FlagStorageInterface {
 
+	private string $file_path;
+
 	/**
-	 * @param mixed $source The source of the flags: a string path to a JSON file or an array of flags.
-	 * @return array<string,string> Array of flag states where values are 'on' or 'off'
-	 * @throws \Exception If unable to retrieve flags.
+	 * @param string $file_path Path to JSON file containing feature flags.
+	 * @throws \InvalidArgumentException If file path is invalid.
 	 */
-	public static function get_flags_from( $source = null ): array {
-		$flags = array();
-		$flags_clean = array();
-		if ( is_null( $source ) ) {
-			return $flags_clean;
-		} else if ( is_string( $source ) ) {
-			if ( ! file_exists( $source ) ) {
-				throw new \Exception( 'JSON file not found' );
-			}
-			$flags = json_decode( file_get_contents( $source ), true );
-		} else {
-			$flags = $source;
+	public function __construct( string $file_path ) {
+		if ( empty( $file_path ) ) {
+			throw new \InvalidArgumentException( 'File path cannot be empty' );
 		}
-		foreach ( $flags as $key => $value ) {
+
+		$this->file_path = $file_path;
+	}
+
+	public function get_flags(): array {
+		$flags_clean = array();
+		$flags_dirty = $this->get_flags_from_file();
+		foreach ( $flags_dirty as $key => $value ) {
 			try {
+				if ( ! is_string( $key ) || ! is_string( $value ) ) {
+					continue;
+				}
 				$flag = new FeatureFlag( $key, $value );
-				$flags_clean[ $flag->key ] = $flag->value;
-			} catch ( \Exception $e ) {
+				$flags_clean[ $flag->key ] = $flag;
+			} catch ( \Throwable $e ) {
 				continue;
 			}
 		}
+
 		return $flags_clean;
+	}
+
+	/**
+	 * @return array<mixed,mixed> Array of contents from JSON file
+	 * @throws \Exception If unable to retrieve flags.
+	 */
+	private function get_flags_from_file(): array {
+		$this->validate_file_path();
+
+		$file_contents = file_get_contents( $this->file_path );
+		if ( false === $file_contents ) {
+			throw new \Exception( 'Failed to read JSON file' );
+		}
+
+		$flags_dirty = json_decode( $file_contents, true );
+		if ( JSON_ERROR_NONE !== json_last_error() ) {
+			throw new \Exception( 'Invalid JSON file' );
+		}
+
+		if ( ! is_array( $flags_dirty ) ) {
+			throw new \Exception( 'Could not decode JSON file' );
+		}
+
+		return $flags_dirty;
+	}
+
+	/**
+	 * @throws \Exception If file path is invalid.
+	 */
+	private function validate_file_path(): void {
+		if ( ! file_exists( $this->file_path ) ) {
+			throw new \Exception( 'JSON file not found' );
+		}
+
+		if ( ! is_readable( $this->file_path ) ) {
+			throw new \Exception( 'JSON file is not readable' );
+		}
 	}
 }
