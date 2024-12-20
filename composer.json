@@ -3,6 +3,17 @@
     "description": "Feature Flag for WordPress",
     "type": "library",
     "license": "GPL-3.0-or-later",
+    "keywords": [
+        "feature-flag",
+        "feature-toggle",
+        "php",
+        "wordpress"
+    ],
+    "homepage": "https://github.com/Digital-Gravy/feature-flag",
+    "support": {
+        "issues": "https://github.com/Digital-Gravy/feature-flag/issues",
+        "source": "https://github.com/Digital-Gravy/feature-flag"
+    },
     "autoload": {
         "psr-4": {
             "DigitalGravy\\FeatureFlag\\": "src/"
