@@ -73,6 +73,9 @@ $store = new FeatureFlagStore($flags->get_flags());
 
 ### Multiple Sources
 
+The `FeatureFlagStore` constructor accepts an array of flags from different storage backends.
+When multiple sources are provided, the flags are merged together, and the last source overrides the previous ones.
+
 ```php
 $store = new FeatureFlagStore(
     $jsonFlags->get_flags(),
