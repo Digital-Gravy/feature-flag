@@ -1,6 +1,6 @@
 # PHP Feature Flag Manager
 
-[![Build Status](https://github.com/digitalgravy/feature-flag/actions/workflows/ci.yml/badge.svg)](https://github.com/digitalgravy/feature-flag/actions/workflows/ci.yml)
+[![Build Status](https://github.com/Digital-Gravy/feature-flag/actions/workflows/ci.yml/badge.svg)](https://github.com/digitalgravy/feature-flag/actions/workflows/ci.yml)
 [![Latest Stable Version](https://poser.pugx.org/digital-gravy/feature-flag/v)](https://packagist.org/packages/digital-gravy/feature-flag)
 [![License](https://poser.pugx.org/digital-gravy/feature-flag/license)](https://packagist.org/packages/digital-gravy/feature-flag)
 
