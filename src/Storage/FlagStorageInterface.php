@@ -7,11 +7,12 @@
 
 namespace DigitalGravy\FeatureFlag\Storage;
 
+use DigitalGravy\FeatureFlag\FeatureFlag;
+
 interface FlagStorageInterface {
 	/**
-	 * @param mixed $source The source of the flags.
-	 * @return array<string,string> Array of flag states where values are 'on' or 'off'
+	 * @return array<string,FeatureFlag> Array of flag states where values are 'on' or 'off'
 	 * @throws \Exception If unable to retrieve flags.
 	 */
-	public static function get_flags_from( $source = null ): array;
+	public function get_flags(): array;
 }
