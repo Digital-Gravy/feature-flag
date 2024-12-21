@@ -48,18 +48,17 @@ class KeyedArrayTest extends TestCase {
 
 	/**
 	 * @test
-	 * @description Storage returns flags when source contains valid flags
+	 * @description Storage injects flags into store when source contains valid flags
 	 */
-	public function storage_returns_flags_when_source_contains_valid_flags(): void {
+	public function storage_injects_flags_into_store_when_source_contains_valid_flags(): void {
 		$storage = new KeyedArray(
 			array(
 				'test-on' => 'on',
 				'test-off' => 'off',
 			)
 		);
-		$flags = $storage->get_flags();
-		$this->assertCount( 2, $flags );
-		$this->assertArrayHasKey( 'test-on', $flags );
-		$this->assertArrayHasKey( 'test-off', $flags );
+		$store = new FeatureFlagStore( $storage->get_flags() );
+		$this->assertTrue( $store->is_on( 'test-on' ) );
+		$this->assertFalse( $store->is_on( 'test-off' ) );
 	}
 }

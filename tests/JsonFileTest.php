@@ -7,6 +7,7 @@
 
 namespace DigitalGravy\FeatureFlag\Tests;
 
+use DigitalGravy\FeatureFlag\FeatureFlagStore;
 use DigitalGravy\FeatureFlag\Storage\JsonFile;
 use PHPUnit\Framework\TestCase;
 
@@ -77,13 +78,12 @@ class JsonFileTest extends TestCase {
 
 	/**
 	 * @test
-	 * @description Storage returns flags when file contains valid flags
+	 * @description Storage injects flags into store when file contains valid flags
 	 */
-	public function storage_returns_flags_when_file_contains_valid_flags(): void {
+	public function storage_injects_flags_into_store_when_file_contains_valid_flags(): void {
 		$storage = new JsonFile( 'tests/data/flags-valid.json' );
-		$flags = $storage->get_flags();
-		$this->assertCount( 2, $flags );
-		$this->assertArrayHasKey( 'test-on', $flags );
-		$this->assertArrayHasKey( 'test-off', $flags );
+		$store = new FeatureFlagStore( $storage->get_flags() );
+		$this->assertTrue( $store->is_on( 'test-on' ) );
+		$this->assertFalse( $store->is_on( 'test-off' ) );
 	}
 }
