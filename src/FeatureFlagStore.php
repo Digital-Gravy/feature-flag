@@ -7,6 +7,8 @@
 
 namespace DigitalGravy\FeatureFlag;
 
+use DigitalGravy\FeatureFlag\Exception\Not_A_Flag;
+
 class FeatureFlagStore {
 
 	/** @var bool */
@@ -17,6 +19,7 @@ class FeatureFlagStore {
 
 	/**
 	 * @param array<FeatureFlag>[] ...$sources The sources for the flags.
+	 * @throws Not_A_Flag
 	 */
 	public function __construct( array ...$sources ) {
 		$this->flags = self::merge_sources( ...$sources );
@@ -47,11 +50,10 @@ class FeatureFlagStore {
 	}
 
 	public function is_on( string $flag_key ): bool {
-		try {
-			$flag_key = FeatureFlag::sanitize_key( $flag_key );
-			return 'on' === $this->flags[ $flag_key ]->value;
-		} catch ( \Throwable $e ) {
+		$flag_key = FeatureFlag::sanitize_key( $flag_key );
+		if ( ! isset( $this->flags[ $flag_key ] ) ) {
 			throw new Exception\Flag_Key_Not_Found( $flag_key ); // @codingStandardsIgnoreLine
 		}
+		return 'on' === $this->flags[ $flag_key ]->value;
 	}
 }
