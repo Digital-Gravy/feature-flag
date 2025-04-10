@@ -19,7 +19,8 @@ class FeatureFlagStore {
 
 	/**
 	 * @param array<FeatureFlag>[] ...$sources The sources for the flags.
-	 * @throws Not_A_Flag
+	 * @throws Not_A_Flag If there are invalid flags.
+	 * @throws Flag_Key_Not_Found If the flag key is not found.
 	 */
 	public function __construct( array ...$sources ) {
 		$this->flags = self::merge_sources( ...$sources );
