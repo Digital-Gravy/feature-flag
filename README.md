@@ -6,6 +6,14 @@
 
 A flexible PHP library for managing feature flags with multiple storage backends.
 
+## Installation
+
+You can install the library via Composer:
+
+```bash
+composer require digital-gravy/feature-flag
+```
+
 ## Features
 
 - Simple on/off feature flag management
@@ -16,8 +24,6 @@ A flexible PHP library for managing feature flags with multiple storage backends
 - Type-safe implementation
 - Extensible storage interface
 - Exception handling for invalid flags
-
-## Installation
 
 ## Usage
 
