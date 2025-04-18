@@ -18,7 +18,7 @@ class FeatureFlagStore {
 	private array $flags = array();
 
 	/**
-	 * @param array<FeatureFlag>[] ...$sources The sources for the flags.
+	 * @param array<string, FeatureFlag>|array<array<string, FeatureFlag>> ...$sources The sources for the flags.
 	 * @throws Exception\Not_A_Flag If there are invalid flags.
 	 */
 	public function __construct( array ...$sources ) {
@@ -27,7 +27,7 @@ class FeatureFlagStore {
 	}
 
 	/**
-	 * @param array<FeatureFlag>[] ...$sources The sources to merge.
+	 * @param array<string, FeatureFlag>|array<array<string, FeatureFlag>> ...$sources The sources to merge.
 	 * @return array<string, FeatureFlag>
 	 * @throws Exception\Not_A_Flag If there are invalid flags.
 	 */
