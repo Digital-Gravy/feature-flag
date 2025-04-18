@@ -22,10 +22,7 @@
     "autoload-dev": {
         "psr-4": {
             "DigitalGravy\\FeatureFlag\\Tests\\": "tests/"
-        },
-        "files": [
-            "src/Helpers/Functions.php"
-        ]
+        }
     },
     "authors": [
         {
