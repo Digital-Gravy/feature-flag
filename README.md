@@ -118,6 +118,8 @@ The library includes several exception types:
 - `Invalid_Flag_Value`: Thrown when a flag value is not 'on' or 'off'
 - `Flag_Key_Not_Found`: Thrown when attempting to check a non-existent flag
 - `Not_A_Flag`: Thrown when invalid flag types are provided
+- `FileNotFoundException`: Thrown when the JSON file does not exist
+- `FileNotReadableException`: Thrown when the JSON file exists but is not readable
 
 ### License
 
