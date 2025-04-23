@@ -57,6 +57,9 @@ class FeatureFlagStore {
 		return 'on' === $this->flags[ $flag_key ]->value;
 	}
 
+	/**
+	 * @return array<string, string>
+	 */
 	public function get_flags(): array {
 		$flags = array();
 		foreach ( $this->flags as $flag ) {
