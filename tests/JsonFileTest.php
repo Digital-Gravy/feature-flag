@@ -9,9 +9,20 @@ namespace DigitalGravy\FeatureFlag\Tests;
 
 use DigitalGravy\FeatureFlag\FeatureFlagStore;
 use DigitalGravy\FeatureFlag\Storage\JsonFile;
+use DigitalGravy\FeatureFlag\Storage\Exception\FileNotFoundException;
+use DigitalGravy\FeatureFlag\Storage\Exception\FileNotReadableException;
+use org\bovigo\vfs\vfsStream;
+use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
 
 class JsonFileTest extends TestCase {
+
+	private vfsStreamDirectory $fs_root;
+
+	protected function setUp(): void {
+		parent::setUp();
+		$this->fs_root = vfsStream::setup( 'root' );
+	}
 
 	/**
 	 * Features:
@@ -33,8 +44,8 @@ class JsonFileTest extends TestCase {
 	 * @description Storage raises error when file is not found
 	 */
 	public function storage_raises_error_when_file_is_not_found(): void {
-		$this->expectException( \RuntimeException::class );
-		$storage = new JsonFile( 'nonexistent.json' );
+		$this->expectException( FileNotFoundException::class );
+		$storage = new JsonFile( vfsStream::url( 'root/nonexistent.json' ) );
 		$storage->get_flags();
 	}
 
@@ -43,8 +54,13 @@ class JsonFileTest extends TestCase {
 	 * @description Storage raises error when file is not readable
 	 */
 	public function storage_raises_error_when_file_is_not_readable(): void {
-		$this->expectException( \JsonException::class );
-		$storage = new JsonFile( 'tests/data/flags-non-readable.json' );
+		$file = vfsStream::newFile( 'flags-non-readable.json' )
+			->withContent( '{}' )
+			->at( $this->fs_root );
+		$file->chmod( 0000 ); // Remove all permissions.
+
+		$this->expectException( FileNotReadableException::class );
+		$storage = new JsonFile( vfsStream::url( 'root/flags-non-readable.json' ) );
 		$storage->get_flags();
 	}
 

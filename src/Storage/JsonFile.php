@@ -8,6 +8,9 @@
 namespace DigitalGravy\FeatureFlag\Storage;
 
 use DigitalGravy\FeatureFlag\FeatureFlag;
+use DigitalGravy\FeatureFlag\Helpers\Functions;
+use DigitalGravy\FeatureFlag\Storage\Exception\FileNotFoundException;
+use DigitalGravy\FeatureFlag\Storage\Exception\FileNotReadableException;
 
 class JsonFile implements FlagStorageInterface {
 
@@ -45,16 +48,10 @@ class JsonFile implements FlagStorageInterface {
 
 	/**
 	 * @return array<mixed,mixed> Array of contents from JSON file
-	 * @throws \RuntimeException If unable to retrieve flags.
 	 * @throws \UnexpectedValueException If JSON file does not decode to an array.
 	 */
 	private function get_flags_from_file(): array {
-		$this->validate_file_path();
-
-		$file_contents = file_get_contents( $this->file_path );
-		if ( false === $file_contents ) {
-			throw new \RuntimeException( 'Failed to read JSON file' );
-		}
+		$file_contents = $this->get_file_contents();
 
 		$flags_dirty = json_decode( $file_contents, true, 512, JSON_THROW_ON_ERROR );
 
@@ -66,15 +63,24 @@ class JsonFile implements FlagStorageInterface {
 	}
 
 	/**
-	 * @throws \RuntimeException If file path is invalid.
+	 * @throws FileNotFoundException If file path is invalid.
+	 * @throws FileNotReadableException If file is not readable.
+	 * @return string The contents of the file.
 	 */
-	private function validate_file_path(): void {
+	private function get_file_contents(): string {
 		if ( ! file_exists( $this->file_path ) ) {
-			throw new \RuntimeException( 'JSON file not found' );
+			throw new FileNotFoundException( Functions::escape_output( $this->file_path ) ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
 
 		if ( ! is_readable( $this->file_path ) ) {
-			throw new \RuntimeException( 'JSON file is not readable' );
+			throw new FileNotReadableException( Functions::escape_output( $this->file_path ) ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
 		}
+
+		$file_contents = file_get_contents( $this->file_path );
+		if ( false === $file_contents ) {
+			throw new FileNotReadableException( Functions::escape_output( $this->file_path ) ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
+		}
+
+		return $file_contents;
 	}
 }
